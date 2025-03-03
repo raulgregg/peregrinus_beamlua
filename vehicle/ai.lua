@@ -5560,10 +5560,10 @@ local function driveUsingPath(arg)
   end
 
   -- Update parameters in the M table
-  M.safetyDistance = arg.safetyDistance or M.safetyDistance
-  M.lateralOffsetRange = arg.lateralOffsetRange or M.lateralOffsetRange
-  M.lateralOffsetScale = arg.lateralOffsetScale or M.lateralOffsetScale
-  M.shortestPathBias = arg.shortestPathBias or M.shortestPathBias
+  M.safetyDistance = arg.safetyDistance or 0.5
+  M.lateralOffsetRange = arg.lateralOffsetRange or 0.4
+  M.lateralOffsetScale = arg.lateralOffsetScale or 0.3
+  M.shortestPathBias = arg.shortestPathBias or 0.7
 
   if arg.script then
     -- Set vehicle position and orientation at the start of the path
