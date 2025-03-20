@@ -5801,13 +5801,17 @@ local function startStopDataLog(name)
   end
 end
 
-local function logDriverDataToCsv(driver, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+local function logDriverDataToCsv(driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
   local fileName = driver .. ".csv"
   local nextRowNumber = 1  -- Default to 1 if the file doesn't exist
 
   -- Validate input parameters
   if not driver then
     print("Error: Missing or invalid parameter 'driver'")
+    return
+  end
+  if not series_name then
+    print("Error: Missing or invalid parameter 'series_name'")
     return
   end
   if not map_name then
@@ -5889,11 +5893,11 @@ local function logDriverDataToCsv(driver, map_name, stage_class, run, checkpoint
   -- Initialize or append to the CSV file
   if not misc.csvFile then
       -- Create a new CSV file with headers if it doesn't exist
-      misc.csvFile = require('csvlib').newCSV("number", "driver", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
+      misc.csvFile = require('csvlib').newCSV("number", "driver", "series_name", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
   end
 
   -- Append the new data
-  misc.csvFile:add(nextRowNumber, driver, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+  misc.csvFile:add(nextRowNumber, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
 
   -- Write the data to the CSV file
   misc.csvFile:write(fileName)
