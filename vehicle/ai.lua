@@ -5541,8 +5541,13 @@ local function driveUsingPath(arg)
     return
   end
 
+  -- Update parameters in the M table
   M.raceMode = arg.raceMode or 'off'  -- Default to 'off' only if not provided
-  
+  M.safetyDistance = arg.safetyDistance or 0.5
+  M.lateralOffsetRange = arg.lateralOffsetRange or 0.4
+  M.lateralOffsetScale = arg.lateralOffsetScale or 0.3
+  M.shortestPathBias = arg.shortestPathBias or 0.7
+
   -- Debug statement for raceMode
   if arg.raceMode == 'on' and arg.avoidCars == 'on' then
     print("Race mode is ON. Racing behavior is active.")
@@ -5558,12 +5563,6 @@ local function driveUsingPath(arg)
   else
     print("Race mode is OFF. Default behavior is active.")  -- Debug statement
   end
-
-  -- Update parameters in the M table
-  M.safetyDistance = arg.safetyDistance or 0.5
-  M.lateralOffsetRange = arg.lateralOffsetRange or 0.4
-  M.lateralOffsetScale = arg.lateralOffsetScale or 0.3
-  M.shortestPathBias = arg.shortestPathBias or 0.7
 
   if arg.script then
     -- Set vehicle position and orientation at the start of the path
@@ -5802,14 +5801,34 @@ local function startStopDataLog(name)
   end
 end
 
-local function logDriverDataToCsv(driver, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+local function logDriverDataToCsv(driver, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
   local fileName = driver .. ".csv"
   local nextRowNumber = 1  -- Default to 1 if the file doesn't exist
 
   -- Validate input parameters
   if not driver then
-      print("Error: Missing or invalid parameter 'driver'")
-      return
+    print("Error: Missing or invalid parameter 'driver'")
+    return
+  end
+  if not map_name then
+    print("Error: Missing or invalid parameter 'map_name'")
+    return
+  end
+  if not stage_class then
+    print("Error: Missing or invalid parameter 'stage_class'")
+    return
+  end
+  if not run then
+    print("Error: Missing or invalid parameter 'run'")
+    return
+  end
+  if not checkpoint then
+    print("Error: Missing or invalid parameter 'checkpoint'")
+    return
+  end
+  if not multiplier then
+    print("Error: Missing or invalid parameter 'driver'")
+    return
   end
   if not risk then
       print("Error: Missing or invalid parameter 'risk'")
@@ -5870,15 +5889,15 @@ local function logDriverDataToCsv(driver, risk, vision, awareness, safetyDistanc
   -- Initialize or append to the CSV file
   if not misc.csvFile then
       -- Create a new CSV file with headers if it doesn't exist
-      misc.csvFile = require('csvlib').newCSV("number", "driver", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
+      misc.csvFile = require('csvlib').newCSV("number", "driver", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
   end
 
   -- Append the new data
-  misc.csvFile:add(nextRowNumber, driver, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+  misc.csvFile:add(nextRowNumber, driver, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
 
   -- Write the data to the CSV file
   misc.csvFile:write(fileName)
-  print("Data successfully written to " .. fileName .. " for driver: " .. driver)
+  -- print("Data successfully written to " .. fileName .. " for driver: " .. driver)
 end
 
 -- public interface
@@ -5919,6 +5938,7 @@ M.setRecoverOnCrash = setRecoverOnCrash
 M.getEdgeLaneConfig = getEdgeLaneConfig
 M.setPullOver = setPullOver
 M.roadNaturalContinuation = roadNaturalContinuation -- for debugging
+M.logDriverDataToCsv = logDriverDataToCsv
 
 -- scriptai
 M.startRecording = startRecording
