@@ -5801,11 +5801,15 @@ local function startStopDataLog(name)
   end
 end
 
-local function logDriverDataToCsv(driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
-  local fileName = driver .. ".csv"
+local function logDriverDataToCsv(time, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+  local fileName = "/csvData/".. driver .. ".csv"
   local nextRowNumber = 1  -- Default to 1 if the file doesn't exist
 
   -- Validate input parameters
+  if not time then
+    print("Error: Missing or invalid parameter 'time'")
+    return
+  end
   if not driver then
     print("Error: Missing or invalid parameter 'driver'")
     return
@@ -5893,15 +5897,145 @@ local function logDriverDataToCsv(driver, series_name, map_name, stage_class, ru
   -- Initialize or append to the CSV file
   if not misc.csvFile then
       -- Create a new CSV file with headers if it doesn't exist
-      misc.csvFile = require('csvlib').newCSV("number", "driver", "series_name", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
+      misc.csvFile = require('csvlib').newCSV("number", "time", "driver", "series_name", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
   end
 
   -- Append the new data
-  misc.csvFile:add(nextRowNumber, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+  misc.csvFile:add(nextRowNumber, time, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
 
   -- Write the data to the CSV file
   misc.csvFile:write(fileName)
   -- print("Data successfully written to " .. fileName .. " for driver: " .. driver)
+end
+
+local function readCSVData(filename, separator)
+  -- Set a default separator if none is provided
+  separator = separator or ","
+
+  -- Open the CSV file for reading
+  local csvFile = io.open(filename, "r")
+  if not csvFile then
+      return "Error: Could not open file " .. filename
+  end
+
+  -- Read the header (first row) of the CSV file
+  local header = csvFile:read()
+  if not header then
+      csvFile:close()
+      return "Error: CSV file is empty or has no header"
+  end
+
+  -- Convert the header string into a table
+  local headerTable = {}
+  for field in string.gmatch(header, "[^" .. separator .. "]+") do
+      table.insert(headerTable, field)
+  end
+
+  -- Print the header
+  print("Header: " .. table.concat(headerTable, ", "))
+
+  -- Read and process each row of the CSV file
+  local rowIndex = 1
+  while true do
+      local row = csvFile:read()
+      if not row then break end  -- Exit the loop if there are no more rows
+
+      -- Convert the row string into a table
+      local rowData = {}
+      for field in string.gmatch(row, "[^" .. separator .. "]+") do
+          table.insert(rowData, field)
+      end
+
+      -- Debugging: Print the raw row data
+      print("Raw Row " .. rowIndex .. ": " .. table.concat(rowData, ", "))
+
+      -- Map row data to header fields
+      local rowMapped = {}
+      for i, fieldName in ipairs(headerTable) do
+          rowMapped[fieldName] = rowData[i] or "nil"  -- Use "nil" as a placeholder for missing values
+      end
+
+      -- Print or process the row data
+      print(string.format(
+          "Row %d: number=%s, driver=%s, map_name=%s, stage_class=%s, run=%s, checkpoint=%s, multiplier=%s, risk=%s, vision=%s, awareness=%s, safetyDistance=%s, lateralOffsetRange=%s, lateralOffsetScale=%s, shortestPathBias=%s, turnForceCoef=%s, springForceIntegratorDispLim=%s",
+          rowIndex,
+          rowMapped["number"], rowMapped["driver"], rowMapped["map_name"], rowMapped["stage_class"], rowMapped["run"], rowMapped["checkpoint"], rowMapped["multiplier"], rowMapped["risk"], rowMapped["vision"], rowMapped["awareness"], rowMapped["safetyDistance"], rowMapped["lateralOffsetRange"], rowMapped["lateralOffsetScale"], rowMapped["shortestPathBias"], rowMapped["turnForceCoef"], rowMapped["springForceIntegratorDispLim"]
+      ))
+
+      rowIndex = rowIndex + 1
+  end
+
+  -- Close the CSV file
+  csvFile:close()
+
+  -- Return a success message
+  return "CSV file processed successfully"
+end
+
+local function readCSVforTrigger(filename, separator)
+  separator = separator or ","
+  local csvFile = io.open(filename, "r")
+  if not csvFile then
+      return nil, "Error: Could not open file " .. filename
+  end
+
+  local header = csvFile:read()
+  if not header then
+      csvFile:close()
+      return nil, "Error: CSV file is empty or has no header"
+  end
+
+  local headerTable = {}
+  for field in string.gmatch(header, "[^" .. separator .. "]+") do
+      table.insert(headerTable, field:gsub("^%s*(.-)%s*$", "%1"))
+  end
+
+  local driverData = {}
+  local paramMap = {
+      risk = {'risk_min', 'risk_max'},
+      vision = {'vision_min', 'vision_max'},
+      awareness = {'awareness_min', 'awareness_max'},
+      safetyDistance = {'safetyDistance_min', 'safetyDistance_max'},
+      lateralOffsetRange = {'lateraloffsetrange_min', 'lateraloffsetrange_max'},
+      lateralOffsetScale = {'lateraloffsetscale_min', 'lateraloffsetscale_max'},
+      shortestPathBias = {'shortestpathbias_min', 'shortestpathbias_max'}
+  }
+
+  local rowIndex = 1
+  while true do
+      local row = csvFile:read()
+      if not row then break end
+
+      local rowData = {}
+      for field in string.gmatch(row, "[^" .. separator .. "]+") do
+          table.insert(rowData, field:gsub("^%s*(.-)%s*$", "%1"))
+      end
+
+      local rowMapped = {}
+      for i, fieldName in ipairs(headerTable) do
+          rowMapped[fieldName] = rowData[i] or "nil"
+      end
+
+      local carFilename = rowMapped['car_filename']
+      if carFilename and carFilename ~= "nil" then
+          driverData[carFilename] = {}
+          for param, keys in pairs(paramMap) do
+              local minVal = tonumber(rowMapped[keys[1]])
+              local maxVal = tonumber(rowMapped[keys[2]])
+              if minVal and maxVal then
+                  driverData[carFilename][param] = { min = minVal, max = maxVal }
+              else
+                  print(string.format("Warning: Invalid min/max for %s in row %d", param, rowIndex))
+              end
+          end
+      else
+          print(string.format("Warning: Missing car_filename in row %d", rowIndex))
+      end
+      rowIndex = rowIndex + 1
+  end
+
+  csvFile:close()
+  return driverData
 end
 
 -- public interface
@@ -5943,6 +6077,8 @@ M.getEdgeLaneConfig = getEdgeLaneConfig
 M.setPullOver = setPullOver
 M.roadNaturalContinuation = roadNaturalContinuation -- for debugging
 M.logDriverDataToCsv = logDriverDataToCsv
+M.readCSVData = readCSVData
+M.readCSVforTrigger = readCSVforTrigger
 
 -- scriptai
 M.startRecording = startRecording
