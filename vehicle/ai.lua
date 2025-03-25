@@ -5801,7 +5801,7 @@ local function startStopDataLog(name)
   end
 end
 
-local function logDriverDataToCsv(time, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+local function logDriverDataToCsv(time, driver, series_name, map_name, stage_class, run, is_training, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
   local driver_name = driver:gsub("%s+(%a)", function(letter) return letter:upper() end)
                             :gsub("^%a", function(firstLetter) return firstLetter:lower() end)
                             :gsub("%s", "")  -- Remove any remaining spaces
@@ -5831,6 +5831,10 @@ local function logDriverDataToCsv(time, driver, series_name, map_name, stage_cla
     return
   end
   if not run then
+    print("Error: Missing or invalid parameter 'run'")
+    return
+  end
+  if not is_training then
     print("Error: Missing or invalid parameter 'run'")
     return
   end
@@ -5901,11 +5905,11 @@ local function logDriverDataToCsv(time, driver, series_name, map_name, stage_cla
   -- Initialize or append to the CSV file
   if not misc.csvFile then
       -- Create a new CSV file with headers if it doesn't exist
-      misc.csvFile = require('csvlib').newCSV("number", "time", "driver", "series_name", "map_name", "stage_class", "run", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
+      misc.csvFile = require('csvlib').newCSV("number", "time", "driver", "series_name", "map_name", "stage_class", "run", "is_training", "checkpoint", "multiplier", "risk", "vision", "awareness", "safetyDistance", "lateralOffsetRange", "lateralOffsetScale", "shortestPathBias", "turnForceCoef", "springForceIntegratorDispLim")
   end
 
   -- Append the new data
-  misc.csvFile:add(nextRowNumber, time, driver, series_name, map_name, stage_class, run, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
+  misc.csvFile:add(nextRowNumber, time, driver, series_name, map_name, stage_class, run, is_training, checkpoint, multiplier, risk, vision, awareness, safetyDistance, lateralOffsetRange, lateralOffsetScale, shortestPathBias, turnForceCoef, springForceIntegratorDispLim)
 
   -- Write the data to the CSV file
   misc.csvFile:write(fileName)
