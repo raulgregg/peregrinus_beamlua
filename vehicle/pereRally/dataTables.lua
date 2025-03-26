@@ -1070,6 +1070,89 @@ local checkpointMultiplierTable = {
     }
 }
 
+local checkpointOffroad = {
+    ['East Coast Usa'] = {
+        ['pereRally'] = {
+            ['Class A'] = {
+
+            },
+            ['Class B'] = {
+
+            },
+            ['Class C'] = {
+
+            },
+            ['Class D'] = {
+
+            },
+        }
+    },
+    ['Italy'] = {
+        ['pereRally'] = {
+            ['Class A'] = {
+
+            },
+            ['Class B'] = {
+
+            },
+            ['Class C'] = {
+
+            },
+            ['Class D'] = {
+
+            },
+        }
+    },
+    ['Jungle Rock Island'] = {
+        ['pereRally'] = {
+            ['Class A'] = {
+
+            },
+            ['Class B'] = {
+
+            },
+            ['Class C'] = {
+
+            },
+            ['Class D'] = {
+
+            },
+        }
+    },
+    ['Utah'] = {
+        ['pereRally'] = {
+            ['Class A'] = {
+
+            },
+            ['Class B'] = {
+
+            },
+            ['Class C'] = {
+
+            },
+            ['Class D'] = {
+
+            },
+        }
+    },
+    ['Small Island'] = {
+        ['pereRally'] = {
+            ['Class A'] = {
+
+            },
+            ['Class B'] = {
+
+            },
+            ['Class C'] = {
+
+            },
+            ['Class D'] = {
+
+            },
+        }
+    }
+}
+
 local vehicleLookup = {}
 for _, vehicle in ipairs(vehicles) do
     vehicleLookup[vehicle.path] = vehicle
