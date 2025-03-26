@@ -1074,49 +1074,73 @@ local checkpointOffroad = {
     ['East Coast Usa'] = {
         ['pereRally'] = {
             ['Class A'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default", [8] = "default", [9] = "default",
+                [10] = "default", [11] = "default", [12] = "default"
             },
             ['Class B'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default"
             },
             ['Class C'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default"
             },
             ['Class D'] = {
-
-            },
+                [0] = "offRoad", [1] = "offRoad", [2] = "offRoad", [3] = "offRoad", [4] = "offRoad",
+                [5] = "offRoad", [6] = "offRoad", [7] = "offRoad", [8] = "offRoad", [9] = "offRoad",
+                [10] = "offRoad", [11] = "offRoad", [12] = "offRoad", [13] = "offRoad", [14] = "offRoad"
+            }
         }
     },
     ['Italy'] = {
         ['pereRally'] = {
             ['Class A'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default", [8] = "default", [9] = "default",
+                [10] = "default", [11] = "default", [12] = "default", [13] = "default", [14] = "default",
+                [15] = "default", [16] = "default", [17] = "default", [18] = "default", [19] = "default",
+                [20] = "default", [21] = "default", [22] = "default", [23] = "default", [24] = "default",
+                [25] = "default", [26] = "default", [27] = "default"
             },
             ['Class B'] = {
-
+                [0] = "default", [1] = "default", [2] = "offRoad", [3] = "default", [4] = "default",
+                [5] = "offRoad", [6] = "offRoad", [7] = "default", [8] = "default", [9] = "default"
             },
             ['Class C'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default", [8] = "default", [9] = "default",
+                [10] = "default", [11] = "default", [12] = "default", [13] = "default"
             },
             ['Class D'] = {
-
-            },
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "offRoad",
+                [5] = "offRoad", [6] = "offRoad", [7] = "offRoad", [8] = "offRoad", [9] = "offRoad",
+                [10] = "offRoad", [11] = "offRoad", [12] = "offRoad", [13] = "offRoad", [14] = "offRoad",
+                [15] = "offRoad", [16] = "offRoad"
+            }
         }
     },
     ['Jungle Rock Island'] = {
         ['pereRally'] = {
             ['Class A'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default", [8] = "default", [9] = "default"
             },
             ['Class B'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "offRoad", [8] = "offRoad", [9] = "offRoad",
+                [10] = "offRoad", [11] = "offRoad", [12] = "offRoad", [13] = "offRoad", [14] = "offRoad",
+                [15] = "offRoad", [16] = "offRoad"
             },
             ['Class C'] = {
-
+                [0] = "offRoad", [1] = "offRoad", [2] = "offRoad", [3] = "offRoad", [4] = "offRoad",
+                [5] = "offRoad", [6] = "offRoad", [7] = "default", [8] = "default", [9] = "default",
+                [10] = "default", [11] = "default"
             },
             ['Class D'] = {
-
-            },
+                [0] = "offRoad", [1] = "offRoad", [2] = "offRoad", [3] = "offRoad", [4] = "offRoad",
+                [5] = "offRoad", [6] = "offRoad", [7] = "offRoad", [8] = "offRoad"
+            }
         }
     },
     ['Utah'] = {
@@ -1184,6 +1208,13 @@ local checkpointMultiplierLookup = {
     end
 }
 
+local driveStyleLookup = {
+    getDriveStyle = function(map, series, class, checkpoint)
+        -- Safely navigate the nested tables with defaults
+        return (((checkpointOffroad[map] or {})[series] or {})[class] or {})[checkpoint] or "default"
+    end
+}
+
 local randomizedValues = {
     safetyDistance = {},
     lateralOffsetRange = {},
@@ -1220,6 +1251,7 @@ return {
     vehicles = vehicles,                 -- Raw vehicle data array
     vehicleByPath = vehicleLookup,              -- Quick vehicle lookup by path
     checkpointMultipliers = checkpointMultiplierLookup,  -- Multiplier system
+    driveStyleLookup = driveStyleLookup, -- Drive style data
     randomized = randomizedValues,       -- Pre-generated random parameters
     
     -- Optional refresh function

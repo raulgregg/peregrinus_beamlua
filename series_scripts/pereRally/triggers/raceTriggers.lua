@@ -5,7 +5,6 @@ local dataTables = require("vehicle.pereRally.dataTables")
 local time = os.time()
 local is_training = 1
 local run = 1
-local driveStyle = "default" -- "offroad"
 
 local raw_map_name = core_levels.getLevelName(getMissionFilename());
 local map_name = raw_map_name:gsub("_", " "):gsub("(%a)(%a*)", function(first, rest)
@@ -48,6 +47,12 @@ local function updateDriverPersonality(data)
                 local springForce   = dataTables.randomized.springForce[driver]
                 local turnForce     = dataTables.randomized.turnForce[driver]
                 local awarenessForce = dataTables.randomized.awarenessForce[driver]
+                local driveStyle = dataTables.driveStyleLookup.getDriveStyle(
+                    map_name,
+                    series_name, 
+                    track_class,
+                    checkpoint
+                )                
                 local str = driver
                 local base = str:match(".*/pereRally_(.-)%..*$")
                 local stage_class, namePart = base:match("([^_]+)_(.*)")
