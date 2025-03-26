@@ -1,0 +1,54 @@
+# Ignore .sh files
+*.sh
+
+# Default ignores for common files and directories
+*.class
+*.log
+*.pyc
+*.swp
+*.out
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Dependency directories
+node_modules/
+bower_components/
+jspm_packages/
+
+# Build directories
+build/
+dist/
+out/
+target/
+bin/
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
