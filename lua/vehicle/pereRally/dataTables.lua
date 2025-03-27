@@ -1041,7 +1041,10 @@ local checkpointMultiplierTable = {
     ['Small Island'] = {
         ['pereRally'] = {
             ['Class A'] = {
-
+                [0] = 1.00, [1] = 1.00, [2] = 1.00, [3] = 1.00, [4] = 1.00,
+                [5] = 1.00, [6] = 1.00, [7] = 1.00, [8] = 1.00, [9] = 1.00,
+                [10] = 1.00, [11] = 1.00, [12] = 1.00, [13] = 1.00, [14] = 1.00,
+                [15] = 1.00, [16] = 1.00
             },
             ['Class B'] = {
 
@@ -1150,7 +1153,10 @@ local checkpointOffroad = {
     ['Small Island'] = {
         ['pereRally'] = {
             ['Class A'] = {
-
+                [0] = "default", [1] = "default", [2] = "default", [3] = "default", [4] = "default",
+                [5] = "default", [6] = "default", [7] = "default", [8] = "offRoad", [9] = "offRoad",
+                [10] = "default", [11] = "default", [12] = "default", [13] = "default", [14] = "default",
+                [15] = "default", [16] = "default"
             },
             ['Class B'] = {
 
