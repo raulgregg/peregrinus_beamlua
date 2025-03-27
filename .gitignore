@@ -2,7 +2,7 @@
 *.sh
 
 # Ignore folders
-ml_scripts/
+mal_scripts/
 series_scripts/pereRally/ETL
 
 # Default ignores for common files and directories
