@@ -49,6 +49,7 @@ bin/
 *.log
 *.sql
 *.sqlite
+*.db
 
 # Environment files
 .env
