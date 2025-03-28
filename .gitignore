@@ -3,7 +3,9 @@
 
 # Ignore folders
 ml_scripts/
-series_scripts/pereRally/ETL
+series_scripts/
+gameplay/
+lua/
 
 # Default ignores for common files and directories
 *.class
