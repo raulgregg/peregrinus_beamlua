@@ -4,8 +4,7 @@
 # Ignore folders
 ml_scripts/
 series_scripts/
-gameplay/
-lua/
+peregrinus/
 
 # Default ignores for common files and directories
 *.class

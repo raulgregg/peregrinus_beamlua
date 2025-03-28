@@ -1,6 +1,7 @@
 package.path = package.path .. "\\pereRally\\?.lua"
 
 local dataTables = require("vehicle.pereRally.dataTables")
+local driverTables = require("vehicle.pereRally.driverTables")
 
 local time = os.time()
 local is_training = 1
@@ -24,29 +25,29 @@ local function updateDriverPersonality(data)
                                 :gsub("Class%s+A", "Class A")  -- Special case normalization
     end
     if data.event == "enter" then
-        dataTables.refreshRandomValues()
+        driverTables.refreshRandomValues()
         local veh = be:getObjectByID(data.subjectID)
         local tbl1 = core_vehicle_manager.getVehicleData(data.subjectID)
         for k, v in pairs(tbl1['config']) do 
             if k == 'partConfigFilename' then
                 local driver = v
-                local vehicleData = dataTables.vehicleByPath[driver]  -- Get vehicle data
+                local vehicleData = driverTables.vehicleByPath[driver]  -- Get vehicle data
                 local multiplier = dataTables.checkpointMultipliers.getMultiplier(
                     map_name, 
                     series_name, 
                     track_class, 
                     checkpoint
                 )
-                local risk          = dataTables.randomized.risk[driver] * multiplier
-                local vision       = dataTables.randomized.vision[driver]
-                local awareness    = dataTables.randomized.awareness[driver]
-                local safetyDistance = dataTables.randomized.safetyDistance[driver]
-                local lateralOffsetRange = dataTables.randomized.lateralOffsetRange[driver]
-                local lateralOffsetScale = dataTables.randomized.lateralOffsetScale[driver]
-                local shortestPathBias = dataTables.randomized.shortestPathBias[driver]
-                local springForce   = dataTables.randomized.springForce[driver]
-                local turnForce     = dataTables.randomized.turnForce[driver]
-                local awarenessForce = dataTables.randomized.awarenessForce[driver]
+                local risk          = driverTables.randomized.risk[driver] * multiplier
+                local vision       = driverTables.randomized.vision[driver]
+                local awareness    = driverTables.randomized.awareness[driver]
+                local safetyDistance = driverTables.randomized.safetyDistance[driver]
+                local lateralOffsetRange = driverTables.randomized.lateralOffsetRange[driver]
+                local lateralOffsetScale = driverTables.randomized.lateralOffsetScale[driver]
+                local shortestPathBias = driverTables.randomized.shortestPathBias[driver]
+                local springForce   = driverTables.randomized.springForce[driver]
+                local turnForce     = driverTables.randomized.turnForce[driver]
+                local awarenessForce = driverTables.randomized.awarenessForce[driver]
                 local driveStyle = dataTables.driveStyleLookup.getDriveStyle(
                     map_name,
                     series_name, 
