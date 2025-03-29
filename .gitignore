@@ -3,8 +3,9 @@
 
 # Ignore folders
 ml_scripts/
-series_scripts/
 peregrinus/
+series_scripts/etkSeries
+series_scripts/pereRally
 
 # Default ignores for common files and directories
 *.class
